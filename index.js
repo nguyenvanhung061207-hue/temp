@@ -4,37 +4,37 @@ const xPlayerDisplay = document.querySelector('#xPlayerDisplay')
 const oPlayerDisplay = document.querySelector('#oPlayerDisplay')
 const restartBtn = document.querySelector('#restartBtn')
 
-// Initialize variables for the game
+// KHỞI TẠO CÁC BIẾN CHO TRÒ CHƠI
 let player = 'X'
 let isPauseGame = false
 let isGameStart = false
 
-// Array of win conditions
+// MẢNG CÁC ĐIỀU KỆN CHIẾN THẮNG
 const inputCells = ['', '', '',
     '', '', '',
     '', '', '']
 
-// Array of win conditions
+// ẢNG CÁC ĐIỀU KỆN CHIẾN THẮNG
 const winConditions = [
     [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
     [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
     [0, 4, 8], [2, 4, 6] // Diagonals
 ]
 
-// Add click event listeners to each cell
+// Thêm trình lắng nghe sự kiện nhấp chuột vào từng ô
 cells.forEach((cell, index) => {
     cell.addEventListener('click', () => tapCell(cell, index))
 })
 
 function tapCell(cell, index) {
-    // Ensure cell is empty and game isn't paused
+    // Đảm bảo ô trống và trò chơi không bị tạm dừng
     if (cell.textContent == '' &&
         !isPauseGame
     ) {
         isGameStart = true
         updateCell(cell, index)
 
-        // Do a random pick if there are no results
+        // Thực hiện chọn ngẫu nhiên nếu không có kết quả
         if (!checkWinner()) {
             changePlayer()
             randomPick()
@@ -53,22 +53,22 @@ function changePlayer() {
 }
 
 function randomPick() {
-    // Pause the game to allow Computer to pick
+    // Tạm dừng trò chơi để cho phép Máy tính chọn
     isPauseGame = true
 
     setTimeout(() => {
         let randomIndex
         do {
-            // Pick a random index
+            // Chọn một chỉ mục ngẫu nhiên
             randomIndex = Math.floor(Math.random() * inputCells.length)
         } while (
-            // Ensure the chosen cell is empty
+            // Đảm bảo ô đã chọn trống
         inputCells[randomIndex] != ''
             )
 
-        // Update the cell with Computer move
+        // Cập nhật ô bằng cách di chuyển máy tính
         updateCell(cells[randomIndex], randomIndex, player)
-        // Check if Computer not won
+        // Kiểm tra xem máy tính có thắng không
         if (!checkWinner()) {
             changePlayer()
             // Swith back to Human player
@@ -91,7 +91,7 @@ function checkWinner() {
         }
     }
 
-    // Check for a draw (if all cells are filled)
+    // Kiểm tra xem có hòa không (nếu tất cả các ô đều được điền)
     if (inputCells.every(cell => cell != '')) {
         declareDraw()
         return true
@@ -102,7 +102,7 @@ function declareWinner(winningIndices) {
     titleHeader.textContent = `${player} Win`
     isPauseGame = true
 
-    // Highlight winning cells
+    // Đánh dấu các ô chiến thắng
     winningIndices.forEach((index) =>
         cells[index].style.background = '#2A2343'
     )
@@ -117,9 +117,9 @@ function declareDraw() {
 }
 
 function choosePlayer(selectedPlayer) {
-    // Ensure the game hasn't started
+    // Đảm bảo trò chơi chưa bắt đầu
     if (!isGameStart) {
-        // Override the selected player value
+        // Ghi đè giá trị người chơi đã chọn
         player = selectedPlayer
         if (player == 'X') {
             // Hightlight X display
