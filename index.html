@@ -2,32 +2,44 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Trò Choơi X-O</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div id="gameContainer">
-    <h1>Trò Chơi X-O</h1>
-    <div id="cellContainer">
-        <div cellIndex="0" class="cell"></div>
-        <div cellIndex="1" class="cell"></div>
-        <div cellIndex="2" class="cell"></div>
-        <div cellIndex="3" class="cell"></div>
-        <div cellIndex="4" class="cell"></div>
-        <div cellIndex="5" class="cell"></div>
-        <div cellIndex="6" class="cell"></div>
-        <div cellIndex="7" class="cell"></div>
-        <div cellIndex="8" class="cell"></div>
-    </div>
-    <h2 id="statusText"></h2>
-    <button id="restartBtn">Restart</button>
-</div>
-<audio loop preload="auto">
-    <source src="kids-game-gaming-background-music-295075.mp3" type="audio/mpeg">
-</audio>
-<script src="index.js"></script>
 
+<main>
+    <header id="header">
+        <div class="player player-active"
+             id="xPlayerDisplay"
+             onclick="choosePlayer('X')">
+            X
+        </div>
+        <h3 id="titleHeader">CHỌN</h3>
+        <div class="player"
+             id="oPlayerDisplay"
+             onclick="choosePlayer('O')">
+            O
+        </div>
+    </header>
+
+    <div id="board">
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+        <div class="cell"></div>
+    </div>
+
+    <button id="restartBtn">
+        Restart
+    </button>
+</main>
+
+<script src="index.js"></script>
 </body>
 </html>
