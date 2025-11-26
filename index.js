@@ -81,7 +81,7 @@ function randomPick() {
 
 function checkWinner() {
     for (const [a, b, c] of winConditions) {
-        // Check each winning condition
+        // Kiểm tra từng điều kiện chiến thắng
         if (inputCells[a] == player &&
             inputCells[b] == player &&
             inputCells[c] == player
