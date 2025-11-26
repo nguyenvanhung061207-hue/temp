@@ -71,12 +71,12 @@ function randomPick() {
         // Kiểm tra xem máy tính có thắng không
         if (!checkWinner()) {
             changePlayer()
-            // Swith back to Human player
+            // Chuyển trở lại Người chơi
             isPauseGame = false
             return
         }
         player = (player == 'X') ? 'O' : 'X'
-    }, 1000) // Delay Computer move by 1 second
+    }, 1000) // Trì hoãn chuyển động của máy tính 1 giây
 }
 
 function checkWinner() {
