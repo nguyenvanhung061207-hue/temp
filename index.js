@@ -1,94 +1,146 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+const cells = document.querySelectorAll('.cell')
+const titleHeader = document.querySelector('#titleHeader')
+const xPlayerDisplay = document.querySelector('#xPlayerDisplay')
+const oPlayerDisplay = document.querySelector('#oPlayerDisplay')
+const restartBtn = document.querySelector('#restartBtn')
 
-* {
-    margin: 0;
-    box-sizing: border-box;
-    font-family: 'Poppins', sans-serif;
-    user-select: none;
+// Initialize variables for the game
+let player = 'X'
+let isPauseGame = false
+let isGameStart = false
 
-    color: white;
-}
+// Array of win conditions
+const inputCells = ['', '', '',
+    '', '', '',
+    '', '', '']
 
-main {
-    background: #333333;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
+// Array of win conditions
+const winConditions = [
+    [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+    [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+    [0, 4, 8], [2, 4, 6] // Diagonals
+]
 
-#header {
-    display: flex;
-    width: 235px;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-}
-#header .player {
-    background: #17122A;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 30px;
-    font-weight: bold;
-    cursor: pointer;
-    border-radius: 12px;
-    border: solid 4px #17122A;
-    opacity: 0.5;
-    transition: 0.3s;
-}
-#header .player:hover {
-    border: solid 4px #2A2343;
-}
-#header .player-active {
-    opacity: 1;
-    border: solid 4px #2A2343;
-}
-#header #xPlayerDisplay {
-    color: #1892EA;
-}
-#header #oPlayerDisplay {
-    color: #A737FF;
+// Add click event listeners to each cell
+cells.forEach((cell, index) => {
+    cell.addEventListener('click', () => tapCell(cell, index))
+})
+
+function tapCell(cell, index) {
+    // Ensure cell is empty and game isn't paused
+    if (cell.textContent == '' &&
+        !isPauseGame
+    ) {
+        isGameStart = true
+        updateCell(cell, index)
+
+        // Do a random pick if there are no results
+        if (!checkWinner()) {
+            changePlayer()
+            randomPick()
+        }
+    }
 }
 
-#board {
-    display: grid;
-    grid-template-columns: repeat(3, 70px);
-    grid-template-rows: repeat(3, 70px);
-    gap: 12px;
-}
-#board .cell {
-    background: #17122A;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 36px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.3s background;
-}
-#board .cell:hover {
-    background: #2A2343;
+function updateCell(cell, index) {
+    cell.textContent = player
+    inputCells[index] = player
+    cell.style.color = (player == 'X') ? '#1892EA' : '#A737FF'
 }
 
-#restartBtn {
-    margin-top: 30px;
-    width: 235px;
-    background: #17122A;
-    padding-top: 8px;
-    padding-bottom: 8px;
-    border: none;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 16px;
-    cursor: pointer;
-    transition: 0.3s background;
-    visibility: hidden;
+function changePlayer() {
+    player = (player == 'X') ? 'O' : 'X'
 }
-#restartBtn:hover {
-    background: #2A2343;
+
+function randomPick() {
+    // Pause the game to allow Computer to pick
+    isPauseGame = true
+
+    setTimeout(() => {
+        let randomIndex
+        do {
+            // Pick a random index
+            randomIndex = Math.floor(Math.random() * inputCells.length)
+        } while (
+            // Ensure the chosen cell is empty
+        inputCells[randomIndex] != ''
+            )
+
+        // Update the cell with Computer move
+        updateCell(cells[randomIndex], randomIndex, player)
+        // Check if Computer not won
+        if (!checkWinner()) {
+            changePlayer()
+            // Swith back to Human player
+            isPauseGame = false
+            return
+        }
+        player = (player == 'X') ? 'O' : 'X'
+    }, 1000) // Delay Computer move by 1 second
 }
+
+function checkWinner() {
+    for (const [a, b, c] of winConditions) {
+        // Check each winning condition
+        if (inputCells[a] == player &&
+            inputCells[b] == player &&
+            inputCells[c] == player
+        ) {
+            declareWinner([a, b, c])
+            return true
+        }
+    }
+
+    // Check for a draw (if all cells are filled)
+    if (inputCells.every(cell => cell != '')) {
+        declareDraw()
+        return true
+    }
+}
+
+function declareWinner(winningIndices) {
+    titleHeader.textContent = `${player} Win`
+    isPauseGame = true
+
+    // Highlight winning cells
+    winningIndices.forEach((index) =>
+        cells[index].style.background = '#2A2343'
+    )
+
+    restartBtn.style.visibility = 'visible'
+}
+
+function declareDraw() {
+    titleHeader.textContent = 'Draw!'
+    isPauseGame = true
+    restartBtn.style.visibility = 'visible'
+}
+
+function choosePlayer(selectedPlayer) {
+    // Ensure the game hasn't started
+    if (!isGameStart) {
+        // Override the selected player value
+        player = selectedPlayer
+        if (player == 'X') {
+            // Hightlight X display
+            xPlayerDisplay.classList.add('player-active')
+            oPlayerDisplay.classList.remove('player-active')
+        } else {
+            // Hightlight O display
+            xPlayerDisplay.classList.remove('player-active')
+            oPlayerDisplay.classList.add('player-active')
+        }
+    }
+}
+
+restartBtn.addEventListener('click', () => {
+    restartBtn.style.visibility = 'hidden'
+    inputCells.fill('')
+    cells.forEach(cell => {
+        cell.textContent = ''
+        cell.style.background = ''
+    })
+    isPauseGame = false
+    isGameStart = false
+    titleHeader.textContent = 'CHỌN'
+})
